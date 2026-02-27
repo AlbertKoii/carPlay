@@ -1,0 +1,9 @@
+{
+  "name": "Project Lobster",
+  "short_name": "龍蝦號",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#ff4500",
+  "icons": [{ "src": "/icon.png", "sizes": "192x192", "type": "image/png" }]
+}
