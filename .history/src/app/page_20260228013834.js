@@ -10,32 +10,23 @@ export default function LobsterPage() {
     if (window.speechSynthesis) window.speechSynthesis.getVoices();
   }, []);
 
-
   const getInternalIP = () => {
     return new Promise((resolve) => {
-      // 💡 故意不給 STUN 伺服器，避免它跑去抓公網 IP
+      // 💡 這裡不使用 STUN，因為有時候 STUN 會強迫回傳公網 IP
       const pc = new RTCPeerConnection({ iceServers: [] }); 
       pc.createDataChannel("");
       pc.createOffer().then(v => pc.setLocalDescription(v));
       
-      const timeout = setTimeout(() => {
-        pc.close();
-        resolve("172.20.10.X (Manual Check Required)"); 
-      }, 3500);
-
       pc.onicecandidate = (e) => {
         if (!e.candidate) return;
         const candidate = e.candidate.candidate;
         
-        // 💡 嚴格過濾：只抓取 172.20 或 192.168 開頭的位址
-        const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
-        const match = candidate.match(ipRegex);
-        
-        if (match) {
-          const ip = match[1];
-          // 排除掉那個 42.79 開頭的公網 IP
+        // 💡 增加過濾邏輯：優先找 172.20. 或 192.168.
+        const ipMatch = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(candidate);
+        if (ipMatch) {
+          const ip = ipMatch[1];
+          // 如果抓到的是 iPhone 熱點段，直接回傳
           if (ip.startsWith('172.20.') || ip.startsWith('192.168.')) {
-            clearTimeout(timeout);
             pc.close();
 
             console.log(`Detected internal IP: ${ip}`);
@@ -43,9 +34,11 @@ export default function LobsterPage() {
           }
         }
       };
+      
+      // 3秒後如果沒抓到特定段，就隨便回傳一個抓到的第一個 IP
+      setTimeout(() => { pc.close(); resolve("Check-Phone-Hotspot-Settings"); }, 3000);
     });
   };
-  
 
   const startLobster = async () => {
     if (isRunning || !hasMounted) return;

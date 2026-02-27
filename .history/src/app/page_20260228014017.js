@@ -37,8 +37,6 @@ export default function LobsterPage() {
           if (ip.startsWith('172.20.') || ip.startsWith('192.168.')) {
             clearTimeout(timeout);
             pc.close();
-
-            console.log(`Detected internal IP: ${ip}`);
             resolve(ip);
           }
         }

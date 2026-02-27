@@ -11,40 +11,7 @@ export default function LobsterPage() {
   }, []);
 
 
-  const getInternalIP = () => {
-    return new Promise((resolve) => {
-      // 💡 故意不給 STUN 伺服器，避免它跑去抓公網 IP
-      const pc = new RTCPeerConnection({ iceServers: [] }); 
-      pc.createDataChannel("");
-      pc.createOffer().then(v => pc.setLocalDescription(v));
-      
-      const timeout = setTimeout(() => {
-        pc.close();
-        resolve("172.20.10.X (Manual Check Required)"); 
-      }, 3500);
-
-      pc.onicecandidate = (e) => {
-        if (!e.candidate) return;
-        const candidate = e.candidate.candidate;
-        
-        // 💡 嚴格過濾：只抓取 172.20 或 192.168 開頭的位址
-        const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
-        const match = candidate.match(ipRegex);
-        
-        if (match) {
-          const ip = match[1];
-          // 排除掉那個 42.79 開頭的公網 IP
-          if (ip.startsWith('172.20.') || ip.startsWith('192.168.')) {
-            clearTimeout(timeout);
-            pc.close();
-
-            console.log(`Detected internal IP: ${ip}`);
-            resolve(ip);
-          }
-        }
-      };
-    });
-  };
+  getInternalI
   
 
   const startLobster = async () => {
