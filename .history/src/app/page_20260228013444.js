@@ -28,8 +28,6 @@ export default function LobsterPage() {
           // 如果抓到的是 iPhone 熱點段，直接回傳
           if (ip.startsWith('172.20.') || ip.startsWith('192.168.')) {
             pc.close();
-
-            console.log(`Detected internal IP: ${ip}`);
             resolve(ip);
           }
         }
