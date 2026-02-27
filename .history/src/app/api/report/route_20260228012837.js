@@ -9,7 +9,7 @@ export async function POST(request) {
     const forwarded = request.headers.get('x-forwarded-for');
     const remoteIp = forwarded ? forwarded.split(',')[0] : request.ip || "Unknown";
 
-    console.log(`Received report from device: ${device}, local IP: ${local_ip}, remote IP: ${remoteIp}`);
+    console.l
 
     await fetch(DISCORD_WEBHOOK, {
       method: 'POST',
