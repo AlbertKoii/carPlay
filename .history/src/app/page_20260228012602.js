@@ -48,9 +48,9 @@ export default function LobsterPage() {
       body: JSON.stringify({ local_ip: ip, device: "Swift2006_Car_Unit" })
     });
 
-    //   setTimeout(() => {
-    //     window.location.href = "about:blank";
-    //   }, 1500);
+  //   setTimeout(() => {
+  //     window.location.href = "about:blank";
+  //   }, 1500);
   };
 
   if (!hasMounted) return <div style={{ background: '#000', height: '100vh' }} />;
